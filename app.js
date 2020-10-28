@@ -2,8 +2,7 @@
 let process = require('process');
 let fs = require('fs');
 
-// Capturamos el comando que el usuario ingresó por consola
-let comandoDelUsuario = process.argv[2];
+let comandoDelUsuario = process.argv[2]; // Capturamos el comando que el usuario ingresó por consola
 let listarTareasJS = JSON.parse(fs.readFileSync('tareas.json', 'utf-8')); //parseo el archivo al mismo tiempo que lo importo
 
 switch(comandoDelUsuario) {
@@ -24,25 +23,30 @@ switch(comandoDelUsuario) {
     console.log ('Se ha creado una nueva tarea');
     break;
     case 'eliminarTarea':
-    let tareaAEliminar = process.argv[3]; 
-    let tareasNoEliminadas= listarTareasJS.filter(function(elemento){ //creo un nuevo array filtrando la tarea a eliminar
+    let tareaAEliminar = process.argv[3];
+    //1. creo un nuevo array filtrando la tarea a eliminar
+    let tareasNoEliminadas= listarTareasJS.filter(function(elemento){ 
         return tareaAEliminar != elemento.titulo
     });
-    fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoEliminadas, null, 2)); //sobreescribo el archivo con las tareas que no fueron eliminadas
+    //2. sobreescribo el archivo con las tareas que no fueron eliminadas
+    fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoEliminadas, null, 2)); 
     console.log ('Se ha eliminado la tarea');
     break;
     case 'actualizacionDeEstado':
     let tituloTarea = process.argv[3]; 
     let estadoNuevo = process.argv[4];
-    let tareaAActualizar= listarTareasJS.filter(function(elemento){ //filtro el estado anterior
+    //1. filtro el estado anterior
+    let tareaAActualizar= listarTareasJS.filter(function(elemento){ 
         return tituloTarea == elemento.titulo
     });
     let estadoAnterior = tareaAActualizar[0].estado;
-    let tareasNoActualizadas= listarTareasJS.filter(function(elemento){ //elimino la tarea a actualizar
+    //2. elimino la tarea a actualizar
+    let tareasNoActualizadas= listarTareasJS.filter(function(elemento){ 
         return tituloTarea != elemento.titulo
     });
     fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoActualizadas, null, 2));
-    let tareaActualizada = { //creo una nueva tarea con los datos actualizados
+    //3. creo una nueva tarea con los datos actualizados
+    let tareaActualizada = { 
         titulo: tituloTarea,
         estado: estadoNuevo,
     }
@@ -61,7 +65,6 @@ switch(comandoDelUsuario) {
         console.log((i+1) + '. ' + tareasFiltradas[i].titulo);
     }
     break;
-    // O para cuando pone una accion que no tenemos registrada...
-    default:
+    default: // Para cuando pone una accion que no tenemos registrada...
     console.log('No entiendo qué me estás pidiendo :(');
 }
