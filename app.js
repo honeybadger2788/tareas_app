@@ -23,14 +23,22 @@ switch(comandoDelUsuario) {
     fs.writeFileSync('./tareas.json', JSON.stringify(listarTareasJS, null, 2));
     console.log ('Se ha creado una nueva tarea');
     break;
-    case 'eliminarTarea': //MEJORAR: ELIMINAR POR N° DE TAREA
+    case 'eliminarTarea': //ahora elimina tareas por posicion
     let tareaAEliminar = process.argv[3];
     //1. creo un nuevo array filtrando la tarea a eliminar
     let tareasNoEliminadas= listarTareasJS.filter(function(elemento){ 
         return tareaAEliminar != elemento.posicion
     });
-    //2. sobreescribo el archivo con las tareas que no fueron eliminadas
-    fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoEliminadas, null, 2)); 
+    //2. actualizo las posiciones de las tareas restantes
+    let tareasMapeadas= tareasNoEliminadas.map(function(elemento,indice){ 
+        return {
+            posicion: indice+1,
+            titulo: elemento.titulo,
+            estado: elemento.estado,
+        }
+    });
+    //3. sobreescribo el archivo con las tareas que no fueron eliminadas
+    fs.writeFileSync('./tareas.json', JSON.stringify(tareasMapeadas, null, 2)); 
     console.log ('Se ha eliminado la tarea');
     break;
     case 'actualizarEstado': //ahora actualiza el estado por la posicion de la tarea

@@ -5,6 +5,11 @@
     "estado": "terminada"
   },
   {
+    "posicion": 2,
+    "titulo": "Armar aplicación de Tareas",
+    "estado": "en progreso"
+  },
+  {
     "posicion": 3,
     "titulo": "Hacer budín de limón",
     "estado": "pendiente"
