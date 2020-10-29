@@ -58,11 +58,15 @@ switch(comandoDelUsuario) {
     let estadoFiltrado = process.argv[3]; 
     let tareasFiltradas = listarTareasJS.filter(function(elemento){
         return estadoFiltrado == elemento.estado
-    }) 
-    console.log('\nEste es el listado de tareas '+ estadoFiltrado +'s'); //podemos hacer algo que nos valide el estado escrito? o que nos diga, "no hay tareas con ese estado"?
-    console.log('----------------------------------------');
-    for (let i=0;i<tareasFiltradas.length;i++){
-        console.log((i+1) + '. ' + tareasFiltradas[i].titulo);
+    });
+    if (tareasFiltradas.length == 0){
+        console.log("No existen tareas con ese estado")
+    } else {
+        console.log('\nEste es el listado de tareas con estado: '+ estadoFiltrado); 
+        console.log('----------------------------------------');
+        for (let i=0;i<tareasFiltradas.length;i++){
+            console.log((i+1) + '. ' + tareasFiltradas[i].titulo);
+        }
     }
     break;
     default: // Para cuando pone una accion que no tenemos registrada...
