@@ -32,7 +32,7 @@ switch(comandoDelUsuario) {
     fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoEliminadas, null, 2)); 
     console.log ('Se ha eliminado la tarea');
     break;
-    case 'actualizacionDeEstado':
+    case 'actualizarEstado':
     let tituloTarea = process.argv[3]; 
     let estadoNuevo = process.argv[4];
     //1. filtro el estado anterior
@@ -69,6 +69,14 @@ switch(comandoDelUsuario) {
         }
     }
     break;
+    case 'help':
     default: // Para cuando pone una accion que no tenemos registrada...
-    console.log('No entiendo qué me estás pidiendo :(');
+    console.log('Ingresa alguno de los siguientes comandos:');
+    console.log('-------------------------------------');
+    console.log('- listarTareas --> Para listar todas las tareas y sus estados.');
+    console.log('- crearTarea --> Para crear una nueva tarea. Se debe espeficicar "titulo" y "estado".');
+    console.log('- eliminarTarea --> Para eliminar una tarea. Se debe especificar "titulo".');
+    console.log('- actualizarEstado --> Para actualizar el estado de una tarea existente. Se debe especificar "titulo" y "nuevoEstado".');
+    console.log('- filtrarTareas --> Para filtrar tareas por sus estados. Se debe especificar "estado".');
+    break;
 }
