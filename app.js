@@ -15,6 +15,7 @@ switch(comandoDelUsuario) {
     break;
     case 'crearTarea':      
     let tareaNueva = {
+        posicion: listarTareasJS.length+1, //se agregó la propiedad posicion para mejorar el resto de los procesos
         titulo: process.argv[3],
         estado: process.argv[4],
     }
@@ -22,40 +23,27 @@ switch(comandoDelUsuario) {
     fs.writeFileSync('./tareas.json', JSON.stringify(listarTareasJS, null, 2));
     console.log ('Se ha creado una nueva tarea');
     break;
-    case 'eliminarTarea':
+    case 'eliminarTarea': //MEJORAR: ELIMINAR POR N° DE TAREA
     let tareaAEliminar = process.argv[3];
     //1. creo un nuevo array filtrando la tarea a eliminar
     let tareasNoEliminadas= listarTareasJS.filter(function(elemento){ 
-        return tareaAEliminar != elemento.titulo
+        return tareaAEliminar != elemento.posicion
     });
     //2. sobreescribo el archivo con las tareas que no fueron eliminadas
     fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoEliminadas, null, 2)); 
     console.log ('Se ha eliminado la tarea');
     break;
-    case 'actualizarEstado':
-    let tituloTarea = process.argv[3]; 
+    case 'actualizarEstado': //ahora actualiza el estado por la posicion de la tarea
+    let posicionTarea = process.argv[3]; 
     let estadoNuevo = process.argv[4];
-    //1. filtro el estado anterior
-    let tareaAActualizar= listarTareasJS.filter(function(elemento){ 
-        return tituloTarea == elemento.titulo
-    });
-    let estadoAnterior = tareaAActualizar[0].estado;
-    //2. elimino la tarea a actualizar
-    let tareasNoActualizadas= listarTareasJS.filter(function(elemento){ 
-        return tituloTarea != elemento.titulo
-    });
-    fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoActualizadas, null, 2));
-    //3. creo una nueva tarea con los datos actualizados
-    let tareaActualizada = { 
-        titulo: tituloTarea,
-        estado: estadoNuevo,
-    }
-    tareasNoActualizadas.push(tareaActualizada);
-    fs.writeFileSync('./tareas.json', JSON.stringify(tareasNoActualizadas, null, 2)); 
+    let estadoAnterior = listarTareasJS[(posicionTarea-1)].estado;
+    listarTareasJS[(posicionTarea-1)].estado = estadoNuevo;
+    fs.writeFileSync('./tareas.json', JSON.stringify(listarTareasJS, null, 2));
     console.log("Estado: " + estadoAnterior + ", actualizado a: "+ estadoNuevo);
     break;
     case 'filtrarTareas': //por estado
-    let estadoFiltrado = process.argv[3]; 
+    let estadoFiltrado = process.argv[3];
+    //filtra las tareas por el estado solicitado
     let tareasFiltradas = listarTareasJS.filter(function(elemento){
         return estadoFiltrado == elemento.estado
     });
@@ -63,9 +51,9 @@ switch(comandoDelUsuario) {
         console.log("No existen tareas con ese estado")
     } else {
         console.log('\nEste es el listado de tareas con estado: '+ estadoFiltrado); 
-        console.log('----------------------------------------');
+        console.log('-----------------------------------------------------------');
         for (let i=0;i<tareasFiltradas.length;i++){
-            console.log((i+1) + '. ' + tareasFiltradas[i].titulo);
+            console.log( tareasFiltradas[i].posicion+ '. ' + tareasFiltradas[i].titulo);
         }
     }
     break;
@@ -73,10 +61,10 @@ switch(comandoDelUsuario) {
     default: // Para cuando pone una accion que no tenemos registrada...
     console.log('Ingresa alguno de los siguientes comandos:');
     console.log('-------------------------------------');
-    console.log('- listarTareas --> Para listar todas las tareas y sus estados.');
-    console.log('- crearTarea --> Para crear una nueva tarea. Se debe espeficicar "titulo" y "estado".');
-    console.log('- eliminarTarea --> Para eliminar una tarea. Se debe especificar "titulo".');
-    console.log('- actualizarEstado --> Para actualizar el estado de una tarea existente. Se debe especificar "titulo" y "nuevoEstado".');
-    console.log('- filtrarTareas --> Para filtrar tareas por sus estados. Se debe especificar "estado".');
+    console.log('• listarTareas --> Para listar todas las tareas y sus estados.');
+    console.log('• crearTarea "titulo" "estado"--> Para crear una nueva tarea.');
+    console.log('• eliminarTarea "posicion"--> Para eliminar una tarea.');
+    console.log('• actualizarEstado "posicion" "nuevo estado"--> Para actualizar el estado de una tarea existente.');
+    console.log('• filtrarTareas "estado"--> Para filtrar tareas por sus estados.');
     break;
 }

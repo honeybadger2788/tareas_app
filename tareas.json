@@ -1,10 +1,12 @@
 [
   {
-    "titulo": "Armar aplicación de Tareas",
-    "estado": "en progreso"
+    "posicion": 1,
+    "titulo": "Repasar JS",
+    "estado": "terminada"
   },
   {
+    "posicion": 3,
     "titulo": "Hacer budín de limón",
-    "estado": "terminada"
+    "estado": "pendiente"
   }
 ]
