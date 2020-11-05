@@ -9,7 +9,7 @@ async function appDeTareas(){
         console.log('\nEste es el listado de tareas que existen');
         console.log('----------------------------------------');
         for (let i=0;i<listarTareasJS.length;i++){
-            console.log((i+1) + '. ' + listarTareasJS[i].titulo + " -- " + listarTareasJS[i].estado);
+            console.log((i+1) + '. ' + listarTareasJS[i].titulo + " --> " + listarTareasJS[i].estado);
         }
         break;
         case 'crearTarea':
@@ -24,57 +24,63 @@ async function appDeTareas(){
         console.log ('Se ha creado una nueva tarea');
         break;
         case 'eliminarTarea': //ahora elimina tareas por posicion
-        const tareaAEliminar = await input.text('Indica la posición de la tarea que quieres eliminar:');  
-        //1. creo un nuevo array filtrando la tarea a eliminar
-        let tareasNoEliminadas= listarTareasJS.filter(function(elemento){ 
-            return tareaAEliminar != elemento.posicion
-        });
-        //2. actualizo las posiciones de las tareas restantes
-        let tareasMapeadas= tareasNoEliminadas.map(function(elemento,indice){ 
-            return {
-                posicion: indice+1,
-                titulo: elemento.titulo,
-                estado: elemento.estado,
-            }
-        });
-        //3. sobreescribo el archivo con las tareas que no fueron eliminadas
-        fs.writeFileSync('./tareas.json', JSON.stringify(tareasMapeadas, null, 2)); 
-        console.log ('Se ha eliminado la tarea');
-        break;
-        case 'actualizarEstado': //ahora actualiza el estado por la posicion de la tarea
-        const posicionTarea = await input.text('Indica la posición de la tarea que quieres actualizar:');  
-        const estadoNuevo = await input.text('Indica el nuevo estado:');  
-        let estadoAnterior = listarTareasJS[(posicionTarea-1)].estado;
-        listarTareasJS[(posicionTarea-1)].estado = estadoNuevo;
-        fs.writeFileSync('./tareas.json', JSON.stringify(listarTareasJS, null, 2));
-        console.log("Estado: " + estadoAnterior + ", actualizado a: "+ estadoNuevo);
-        break;
-        case 'filtrarTareas': //por estado
-        const estadoFiltrado = await input.text('Indica el estado de las tareas que deseas filtrar:');
-        //filtra las tareas por el estado solicitado
-        let tareasFiltradas = listarTareasJS.filter(function(elemento){
-            return estadoFiltrado == elemento.estado
-        });
-        if (tareasFiltradas.length == 0){
-            console.log("No existen tareas con ese estado")
-        } else {
-            console.log('\nEste es el listado de tareas con estado: '+ estadoFiltrado); 
-            console.log('-----------------------------------------------------------');
-            for (let i=0;i<tareasFiltradas.length;i++){
-                console.log( tareasFiltradas[i].posicion+ '. ' + tareasFiltradas[i].titulo); //ahora se respetan las posiciones originales
-            }
+        var tareaAEliminar = await input.text('Indica la posición de la tarea que quieres eliminar:');
+        console.log('La tarea a eliminar es:');
+        console.log('-----------------------');
+        console.log(listarTareasJS[tareaAEliminar-1].posicion + '. ' + listarTareasJS[tareaAEliminar-1].titulo + " --> " + listarTareasJS[tareaAEliminar-1].estado);
+        var confirmacion = await input.confirm('\nEstás seguro que querés borrar esta tarea?') //se agregó confirmación de borrado
+        if (confirmacion == true) {
+    //1. creo un nuevo array filtrando la tarea a eliminar
+    let tareasNoEliminadas= listarTareasJS.filter(function(elemento){ 
+        return tareaAEliminar != elemento.posicion
+    });
+    //2. actualizo las posiciones de las tareas restantes
+    let tareasMapeadas= tareasNoEliminadas.map(function(elemento,indice){ 
+        return {
+            posicion: indice+1,
+            titulo: elemento.titulo,
+            estado: elemento.estado,
         }
-        break;
-        case 'help':  // Para cuando pone una accion que no tenemos registrada...    
-        console.log('Ingresa alguno de los siguientes comandos:');
-        console.log('-------------------------------------');
-        console.log('• listarTareas --> Para listar todas las tareas y sus estados.');
-        console.log('• crearTarea "titulo" "estado"--> Para crear una nueva tarea.');
-        console.log('• eliminarTarea "posicion"--> Para eliminar una tarea.');
-        console.log('• actualizarEstado "posicion" "nuevo estado"--> Para actualizar el estado de una tarea existente.');
-        console.log('• filtrarTareas "estado"--> Para filtrar tareas por sus estados.');
-        break;
+    });
+    //3. sobreescribo el archivo con las tareas que no fueron eliminadas
+    fs.writeFileSync('./tareas.json', JSON.stringify(tareasMapeadas, null, 2)); 
+    console.log ('Se ha eliminado la tarea');
+}
+break;
+case 'actualizarEstado': //ahora actualiza el estado por la posicion de la tarea
+const posicionTarea = await input.text('Indica la posición de la tarea que quieres actualizar:');  
+const estadoNuevo = await input.text('Indica el nuevo estado:');  
+let estadoAnterior = listarTareasJS[(posicionTarea-1)].estado;
+listarTareasJS[(posicionTarea-1)].estado = estadoNuevo;
+fs.writeFileSync('./tareas.json', JSON.stringify(listarTareasJS, null, 2));
+console.log("Estado: " + estadoAnterior + ", actualizado a: "+ estadoNuevo);
+break;
+case 'filtrarTareas': //por estado
+const estadoFiltrado = await input.text('Indica el estado de las tareas que deseas filtrar:');
+//filtra las tareas por el estado solicitado
+let tareasFiltradas = listarTareasJS.filter(function(elemento){
+    return estadoFiltrado == elemento.estado
+});
+if (tareasFiltradas.length == 0){
+    console.log("No existen tareas con ese estado")
+} else {
+    console.log('\nEste es el listado de tareas con estado: '+ estadoFiltrado); 
+    console.log('-----------------------------------------------------------');
+    for (let i=0;i<tareasFiltradas.length;i++){
+        console.log( tareasFiltradas[i].posicion+ '. ' + tareasFiltradas[i].titulo); //ahora se respetan las posiciones originales
     }
+}
+break;
+case 'help':  // Para cuando pone una accion que no tenemos registrada...    
+console.log('Ingresa alguno de los siguientes comandos:');
+console.log('-------------------------------------');
+console.log('• listarTareas --> Para listar todas las tareas y sus estados.');
+console.log('• crearTarea "titulo" "estado"--> Para crear una nueva tarea.');
+console.log('• eliminarTarea "posicion"--> Para eliminar una tarea.');
+console.log('• actualizarEstado "posicion" "nuevo estado"--> Para actualizar el estado de una tarea existente.');
+console.log('• filtrarTareas "estado"--> Para filtrar tareas por sus estados.');
+break;
+}
 }
 
 appDeTareas();
