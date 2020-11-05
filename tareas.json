@@ -13,5 +13,10 @@
     "posicion": 3,
     "titulo": "Hacer budín de limón",
     "estado": "pendiente"
+  },
+  {
+    "posicion": 4,
+    "titulo": "Dormir",
+    "estado": "terminada"
   }
 ]
