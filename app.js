@@ -1,5 +1,5 @@
-let fs = require('fs');
-var input = require ('input');
+const fs = require('fs');
+const input = require ('input');
 
 async function appDeTareas(){
     const comandoDelUsuario = await input.select('\nHola, soy la App de Tareas! Qué te gustaría hacer?', ['crearTarea','listarTareas','eliminarTarea','actualizarEstado','filtrarTareas']);// Capturamos el comando que el usuario ingresó por consola
@@ -24,6 +24,10 @@ async function appDeTareas(){
         console.log ('Se ha creado una nueva tarea');
         break;
         case 'eliminarTarea': //ahora elimina tareas por posicion
+        for (let i=0;i<listarTareasJS.length;i++){
+            console.log((i+1) + '. ' + listarTareasJS[i].titulo + " --> " + listarTareasJS[i].estado);
+        }
+        console.log('----------------------------------------');
         var tareaAEliminar = await input.text('Indica la posición de la tarea que quieres eliminar:');
         console.log('La tarea a eliminar es:');
         console.log('-----------------------');
@@ -48,7 +52,11 @@ async function appDeTareas(){
 }
 break;
 case 'actualizarEstado': //ahora actualiza el estado por la posicion de la tarea
-const posicionTarea = await input.text('Indica la posición de la tarea que quieres actualizar:');  
+for (let i=0;i<listarTareasJS.length;i++){
+    console.log((i+1) + '. ' + listarTareasJS[i].titulo + " --> " + listarTareasJS[i].estado);
+}  
+console.log('----------------------------------------');
+const posicionTarea = await input.text('Indica la posición de la tarea que quieres actualizar:');
 const estadoNuevo = await input.text('Indica el nuevo estado:');  
 let estadoAnterior = listarTareasJS[(posicionTarea-1)].estado;
 listarTareasJS[(posicionTarea-1)].estado = estadoNuevo;
